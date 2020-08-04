@@ -1,0 +1,34 @@
+{
+    "weapons": [
+        {
+            "id": 0,
+            "name": "Starter Projectile",
+            "cooldown": 0.5,
+            "damage": 15.0,
+            "automatic": false,
+            "projectileSpeed": 20.0,
+            "projectileSpriteId": 0,
+            "description": "The starter weapon."
+        },
+        {
+            "id": 1,
+            "name": "Ghost Bow",
+            "cooldown": 1.0,
+            "damage": 50.0,
+            "automatic": false,
+            "projectileSpeed": 10.0,
+            "projectileSpriteId": 1,
+            "description": "A ghostly bow."
+        },
+        {
+            "id": 2,
+            "name": "Rapid Projectile",
+            "cooldown": 0.1,
+            "damage": 5.0,
+            "automatic": true,
+            "projectileSpeed": 30.0,
+            "projectileSpriteId": 2,
+            "description": "Projectiles... But rapid!"
+        }
+    ]
+}
