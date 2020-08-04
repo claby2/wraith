@@ -14,21 +14,25 @@ public class Wisp : MonoBehaviour {
     private const float healthYOffset = 0.5f;
     private const float shootCooldown = 2f;
     private EnemyHealth healthScript;
+    private PlayerController playerScript;
     private float cooldown;
 
     void Start() {
+        playerScript = Player.GetComponent<PlayerController>();
         InstantiateHealth();
     }
 
     void Update() {
-        float distanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);
-        if(distanceToPlayer <= viewDistanceMax && distanceToPlayer >= viewDistanceMin) {
-            transform.position = Vector2.MoveTowards(transform.position, Player.transform.position, moveSpeed * Time.deltaTime);
-        } else if(distanceToPlayer < viewDistanceMin && cooldown < 0) {
-            cooldown = shootCooldown;
-            InstantiateSmallProjectile();
-        } else {
-            cooldown -= Time.deltaTime;
+        if(!playerScript.Phased) {
+            float distanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);
+            if(distanceToPlayer <= viewDistanceMax && distanceToPlayer >= viewDistanceMin) {
+                transform.position = Vector2.MoveTowards(transform.position, Player.transform.position, moveSpeed * Time.deltaTime);
+            } else if(distanceToPlayer < viewDistanceMin && cooldown < 0) {
+                cooldown = shootCooldown;
+                InstantiateSmallProjectile();
+            } else {
+                cooldown -= Time.deltaTime;
+            }
         }
         if(healthScript.Health <= 0) {
             Necromancer.GetComponent<Necromancer>().AliveCount--;

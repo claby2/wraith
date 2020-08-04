@@ -874,6 +874,8 @@ MonoBehaviour:
   CurrentWeaponReload: {fileID: 1397919515}
   WeaponDataJson: {fileID: 4900000, guid: 9bd66fdcd2a4d264986a86f2df0dd518, type: 3}
   AbilityDataJson: {fileID: 4900000, guid: fff772a87a2d54f4a88c8ccafc0f7444, type: 3}
+  PlayerSprite: {fileID: 21300000, guid: 63f5ece9a3fe2384dbee83e44b3c4933, type: 3}
+  PlayerPhasedSprite: {fileID: 21300000, guid: f52fcaf2065cbd2489007970a0869c8a, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

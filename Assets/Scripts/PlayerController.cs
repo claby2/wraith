@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour {
     public CurrentWeaponReload CurrentWeaponReload;
     public TextAsset WeaponDataJson;
     public TextAsset AbilityDataJson;
+    public Sprite PlayerSprite;
+    public Sprite PlayerPhasedSprite;
+    public bool Phased = false;
 
     // Health
     private PlayerHealthBar playerHealthBarScript;
@@ -33,7 +36,7 @@ public class PlayerController : MonoBehaviour {
     // Attack
     private float damageMultiplier = 1f;
     private float attackCooldown = 0f;
-    private int weaponId = 2;
+    private int weaponId = 0;
     private WeaponData weaponData;
     private Weapon weapon;
 
@@ -135,12 +138,12 @@ public class PlayerController : MonoBehaviour {
             abilityCooldowns[ability] -= abilityCooldowns[ability] > 0 ? Time.deltaTime : 0;
             AbilityCooldownVisual[ability].SetCooldown(
                 abilityCooldowns[ability], 
-                abilities[abilitySelected].cooldown
+                abilities[ability].cooldown
             );
             // Handle ability timers
             if(abilityState[ability] && (abilityTimers[ability] - Time.deltaTime) <= 0) {
                 // Ability timer is about to run out
-                switch(abilities[abilitySelected].id) {
+                switch(abilities[ability].id) {
                     case 0:
                         StopAbilityPhase();
                         break;
@@ -151,10 +154,12 @@ public class PlayerController : MonoBehaviour {
                         StopAbilityStrength();
                         break;
                 }
-                abilityCooldowns[abilitySelected] = abilities[abilitySelected].cooldown;
+                abilityCooldowns[ability] = abilities[ability].cooldown;
                 abilityState[ability] = false;
                 if(abilitySelected == ability) {
                     AbilityFrames[ability].Select();
+                } else {
+                    AbilityFrames[ability].Unselect();
                 }
             }
             abilityTimers[ability] -= abilityTimers[ability] > 0 ? Time.deltaTime : 0;
@@ -184,10 +189,13 @@ public class PlayerController : MonoBehaviour {
 
     void UseAbilityPhase() {
         abilityTimers[abilitySelected] = abilities[abilitySelected].duration;
+        SpriteRenderer.sprite = PlayerPhasedSprite;
+        Phased = true;
     }
 
     void StopAbilityPhase() {
-
+        SpriteRenderer.sprite = PlayerSprite;
+        Phased = false;
     }
 
     void UseAbilitySpeedBoost() {
