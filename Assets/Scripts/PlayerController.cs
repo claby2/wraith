@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour {
 
     private float attackCooldown = 0f;
     private int abilitySelected = 0;
-    private int weaponId = 2;
+    private int weaponId = 0;
     private WeaponData weaponData;
     private Weapon weapon;
 
