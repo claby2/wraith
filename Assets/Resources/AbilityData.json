@@ -1,0 +1,25 @@
+{
+    "abilities": [
+        {
+            "id": 0,
+            "name": "Phase",
+            "duration": 2.0,
+            "cooldown": 5.0,
+            "description": "Gain temporary invisibility."
+        },
+        {
+            "id": 1,
+            "name": "Speed Boost",
+            "duration": 2.0,
+            "cooldown": 5.0,
+            "description": "Gain temporary speed."
+        },
+        {
+            "id": 2,
+            "name": "Strength",
+            "duration": 2.0,
+            "cooldown": 5.0,
+            "description": "Gain a temporary damage boost."
+        }
+    ]
+}
