@@ -381,7 +381,7 @@ PrefabInstance:
     - target: {fileID: 3821881165491935408, guid: 33843454484dd124599615f14162c324,
         type: 3}
       propertyPath: m_Name
-      value: Ability 2
+      value: Ability Frame 2
       objectReference: {fileID: 0}
     - target: {fileID: 3821881165491935409, guid: 33843454484dd124599615f14162c324,
         type: 3}
@@ -7410,7 +7410,7 @@ PrefabInstance:
     - target: {fileID: 3821881165491935408, guid: 33843454484dd124599615f14162c324,
         type: 3}
       propertyPath: m_Name
-      value: Ability 1
+      value: Ability Frame 1
       objectReference: {fileID: 0}
     - target: {fileID: 3821881165491935409, guid: 33843454484dd124599615f14162c324,
         type: 3}
@@ -7959,6 +7959,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5413f40996cae0546b14bcd72a8123da, type: 3}
   - {fileID: 21300000, guid: 6ba18f77327a7e645ab3c2415c800e5d, type: 3}
   - {fileID: 21300000, guid: 730f5bda1a97af949a616d33d609ea50, type: 3}
+  - {fileID: 21300000, guid: 8029a3a67e8a9854ba035de4f75b59b0, type: 3}
   PlayerInventoryItems:
   - {fileID: 1029836073}
   - {fileID: 86969721}
@@ -8060,7 +8061,7 @@ PrefabInstance:
     - target: {fileID: 3821881165491935408, guid: 33843454484dd124599615f14162c324,
         type: 3}
       propertyPath: m_Name
-      value: Ability 3
+      value: Ability Frame 3
       objectReference: {fileID: 0}
     - target: {fileID: 3821881165491935409, guid: 33843454484dd124599615f14162c324,
         type: 3}

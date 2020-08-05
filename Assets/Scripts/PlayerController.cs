@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour {
         Inventory.AddItem(Inventory.ItemType.ability, 1);
         Inventory.AddItem(Inventory.ItemType.ability, 2);
         Inventory.AddItem(Inventory.ItemType.weapon, 0);
+        Inventory.AddItem(Inventory.ItemType.ability, 3);
     }
 
     void Update() {
@@ -198,6 +199,9 @@ public class PlayerController : MonoBehaviour {
                 case 2:
                     UseAbilityStrength();
                     break;
+                case 3:
+                    UseAbilityTeleport();
+                    break;
             }
             abilityState[abilitySelected] = true;
         }
@@ -213,6 +217,9 @@ public class PlayerController : MonoBehaviour {
                 break;
             case 2:
                 StopAbilityStrength();
+                break;
+            case 3:
+                StopAbilityTeleport();
                 break;
         }
         abilityCooldowns[ability] = Abilities[ability].cooldown;
@@ -247,6 +254,18 @@ public class PlayerController : MonoBehaviour {
     void StopAbilityStrength() {
         damageMultiplier = 1f;
     }
+
+    void UseAbilityTeleport() {
+        abilityTimers[abilitySelected] = Abilities[abilitySelected].duration;
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, Crosshair.transform.position);
+        // The Physics2D settings are set so queries start in colliders is set to false
+        // This means that it is not needed to detect if the raycast hit the player itself
+        if(hit.collider == null || hit.collider.CompareTag("Solid") == false) {
+            transform.position = Crosshair.transform.position;
+        }
+    }
+
+    void StopAbilityTeleport() {}
 
     [System.Serializable]
     public class WeaponData {

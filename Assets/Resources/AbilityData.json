@@ -20,6 +20,13 @@
             "duration": 10.0,
             "cooldown": 5.0,
             "description": "Gain a temporary damage boost."
+        },
+        {
+            "id": 3,
+            "name": "Teleport",
+            "duration": 0.0,
+            "cooldown": 10.0,
+            "description": "Teleport to the location of your crosshair."
         }
     ]
 }
