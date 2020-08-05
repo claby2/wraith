@@ -55,6 +55,7 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    // Add an item to the inventory, returns true if successful
     public bool AddItem(ItemType type, int id) {
         for(int i = 0; i < (rows * columns); ++i) {
             if(Items[i].type == ItemType.empty) {
@@ -68,6 +69,7 @@ public class Inventory : MonoBehaviour {
         return false;
     }
 
+    // Swap two items at index1 and index2 in the inventory
     public void SwapItems(int index1, int index2) {
         Item itemBuffer = Items[index1];
         Items[index1] = Items[index2];
@@ -75,8 +77,8 @@ public class Inventory : MonoBehaviour {
         RenderItems();
     }
 
+    // Equip new ability/weapon and replace inventory slot with swapped ability/weapon
     public void EquipItem(int index, int slotNumber) {
-        // Equip new ability/weapon and replace inventory slot with swapped ability/weapon
         Item newInventoryItem = new Item();
         newInventoryItem.type = Items[index].type;
         if(Items[index].type == ItemType.weapon) {
@@ -90,7 +92,29 @@ public class Inventory : MonoBehaviour {
         RenderItems();
     }
 
+    // Remove the current equipped item at slotNumber and place it at index
     public void RemoveEquippedItem(int index, int slotNumber) {
+        Item newInventoryItem = RemoveEquippedItem(slotNumber);
+        Items[index] = newInventoryItem;
+        RenderItems();
+    }
+
+    // Swap the currently equipped item at slotNumber with the item at index
+    public void SwapEquippedItem(int index, int slotNumber) {
+        Item newInventoryItem = RemoveEquippedItem(slotNumber);
+        EquipItem(index, slotNumber);
+        Items[index] = newInventoryItem;
+        RenderItems();
+    }
+
+    // Remove an item at a given index
+    public void RemoveItem(int index) {
+        Items[index].type = ItemType.empty;
+        RenderItems();
+    }
+
+    // Removes the equipped item at slotNumber and returns the item that was removed
+    Item RemoveEquippedItem(int slotNumber) {
         Item newInventoryItem = new Item();
         if(slotNumber < 3) {
             // Remove an ability
@@ -103,13 +127,7 @@ public class Inventory : MonoBehaviour {
             newInventoryItem.id = playerController.WeaponId;
             playerController.EquipWeapon(-1);
         }
-        Items[index] = newInventoryItem;
-        RenderItems();
-    }
-
-    public void RemoveItem(int index) {
-        Items[index].type = ItemType.empty;
-        RenderItems();
+        return newInventoryItem;
     }
 
     void InitializePlayerInventorySlots() {
@@ -133,6 +151,7 @@ public class Inventory : MonoBehaviour {
             inventoryItem.Inventory = this;
             inventoryItem.SlotNumber = i;
             inventoryItem.Equipped = true;
+            inventoryItem.Type = i == 3 ? ItemType.weapon : ItemType.ability;
         }
     }
 

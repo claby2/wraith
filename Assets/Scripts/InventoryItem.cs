@@ -11,6 +11,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public RectTransform RectTransform;
     public CanvasGroup CanvasGroup;
     public Inventory Inventory;
+    public Inventory.ItemType Type;
     public int Index;
     public bool Locked = false;
     public int SlotNumber;
@@ -39,8 +40,8 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if(eventData.pointerDrag.GetComponent<Image>().enabled == true) {
             InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
             if(Equipped) {
-                if(Inventory.Items[inventoryItem.Index].type == Inventory.Items[Index].type) {
-                    Inventory.EquipItem(inventoryItem.Index, SlotNumber);
+                if(Inventory.Items[inventoryItem.Index].type == Type) {
+                    Inventory.SwapEquippedItem(inventoryItem.Index, SlotNumber);
                     eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = RectTransform.anchoredPosition;
                 }
             } else if(inventoryItem.Equipped && Inventory.Items[Index].type == Inventory.ItemType.empty) {
