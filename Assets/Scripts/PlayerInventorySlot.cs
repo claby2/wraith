@@ -16,7 +16,6 @@ public class PlayerInventorySlot : MonoBehaviour, IDropHandler {
             InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
             if(Inventory.Items[inventoryItem.Index].type == Type) {
                 Inventory.EquipItem(inventoryItem.Index, SlotNumber);
-                eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = RectTransform.anchoredPosition;
             }
         }
     }

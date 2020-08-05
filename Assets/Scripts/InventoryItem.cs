@@ -6,12 +6,15 @@ using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(CanvasGroup))]
-public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler {
     public Canvas Canvas;
     public RectTransform RectTransform;
     public CanvasGroup CanvasGroup;
+    public Inventory Inventory;
     public int Index;
     public bool Locked = false;
+    public int SlotNumber;
+    public bool Equipped = false;
     private Vector3 originalPosition;
 
     public void OnBeginDrag(PointerEventData eventData) {
@@ -27,8 +30,22 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData) {
         CanvasGroup.alpha = 1f;
         CanvasGroup.blocksRaycasts = true;
-        if(Locked == false) {
+        if(Locked == false || Equipped == true) {
             RectTransform.anchoredPosition = originalPosition;
+        }
+    }
+
+    public void OnDrop(PointerEventData eventData) {
+        if(eventData.pointerDrag.GetComponent<Image>().enabled == true) {
+            InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
+            if(Equipped) {
+                if(Inventory.Items[inventoryItem.Index].type == Inventory.Items[Index].type) {
+                    Inventory.EquipItem(inventoryItem.Index, SlotNumber);
+                    eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = RectTransform.anchoredPosition;
+                }
+            } else if(inventoryItem.Equipped && Inventory.Items[Index].type == Inventory.ItemType.empty) {
+                Inventory.RemoveEquippedItem(Index, inventoryItem.SlotNumber);
+            }
         }
     }
 }

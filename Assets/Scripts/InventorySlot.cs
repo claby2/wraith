@@ -14,8 +14,12 @@ public class InventorySlot : MonoBehaviour, IDropHandler {
         if(eventData.pointerDrag.GetComponent<Image>().enabled == true) {
             InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
             inventoryItem.Locked = true;
-            Inventory.SwapItems(inventoryItem.Index, Index);
-            eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = RectTransform.anchoredPosition;
+            if(inventoryItem.Equipped == false) {
+                Inventory.SwapItems(inventoryItem.Index, Index);
+                eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = RectTransform.anchoredPosition;
+            } else {
+                Inventory.RemoveEquippedItem(Index, inventoryItem.SlotNumber);
+            }
         }
     }
 }

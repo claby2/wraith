@@ -11,10 +11,8 @@ public class PlayerController : MonoBehaviour {
     public GameObject Projectile;
     public AbilityFrame[] AbilityFrames;
     public AbilityIcon[] AbilityIcons;
-    public AbilityIcon[] AbilityInventoryIcons;
     public AbilityCooldown[] AbilityCooldownVisual;
     public CurrentWeaponIcon CurrentWeaponIcon;
-    public CurrentWeaponIcon CurrentWeaponIconInventory;
     public CurrentWeaponReload CurrentWeaponReload;
     public Inventory Inventory;
     public PlayerHealthBar PlayerHealthBar;
@@ -68,7 +66,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update() {
-        Debug.Log(WeaponId);
         HandleAbilities();
         GetMovementInput();
         if(movementInput.x > 0) {
@@ -101,14 +98,25 @@ public class PlayerController : MonoBehaviour {
     public void EquipWeapon(int id) {
         WeaponId = id;
         CurrentWeaponIcon.SetWeapon(WeaponId);
-        CurrentWeaponIconInventory.SetWeapon(WeaponId);
         if(WeaponId != -1) {
             weapon = weaponData.weapons[WeaponId];
         }
     }
 
     public void EquipAbility(int slot, int id) {
-        Abilities[slot] = abilityData.abilities[id];
+        if(id != -1) {
+            Abilities[slot] = abilityData.abilities[id];
+        } else {
+            abilityTimers[slot] = 0f;
+            AbilityFrames[slot].Unselect();
+            AbilityCooldownVisual[slot].SetCooldown(0f, 0f);
+            if(abilityState[slot] == true) {
+                // Ability is currently active but is about to be removed
+                // Stop the ability from continuing
+                StopAbility(Abilities[slot].id, slot);
+            }
+            Abilities[slot] = new Ability(-1);
+        }
     }
 
     void GetMovementInput() {
@@ -152,31 +160,17 @@ public class PlayerController : MonoBehaviour {
         for(int ability = 0; ability < 3; ++ability) {
             // Handle ability icons
             AbilityIcons[ability].SetAbility(Abilities[ability].id);
-            AbilityInventoryIcons[ability].SetAbility(Abilities[ability].id);
             if(Abilities[ability].id != -1) {
                 // Handle ability cooldowns
                 abilityCooldowns[ability] -= abilityCooldowns[ability] > 0 ? Time.deltaTime : 0;
                 AbilityCooldownVisual[ability].SetCooldown(
                     abilityCooldowns[ability], 
-                    Abilities[ability].cooldown,
-                    Abilities[ability].id
+                    Abilities[ability].cooldown
                 );
                 // Handle ability timers
                 if(abilityState[ability] && (abilityTimers[ability] - Time.deltaTime) <= 0) {
                     // Ability timer is about to run out
-                    switch(Abilities[ability].id) {
-                        case 0:
-                            StopAbilityPhase();
-                            break;
-                        case 1:
-                            StopAbilitySpeedBoost();
-                            break;
-                        case 2:
-                            StopAbilityStrength();
-                            break;
-                    }
-                    abilityCooldowns[ability] = Abilities[ability].cooldown;
-                    abilityState[ability] = false;
+                    StopAbility(Abilities[ability].id, ability);
                     if(abilitySelected == ability) {
                         AbilityFrames[ability].Select();
                     } else {
@@ -185,7 +179,7 @@ public class PlayerController : MonoBehaviour {
                 }
                 abilityTimers[ability] -= abilityTimers[ability] > 0 ? Time.deltaTime : 0;
                 // Handle ability frame active sprite
-                if(abilityState[ability]) {
+                if(abilityState[ability] == true) {
                     AbilityFrames[ability].SetActive();
                 }
             }
@@ -207,6 +201,22 @@ public class PlayerController : MonoBehaviour {
             }
             abilityState[abilitySelected] = true;
         }
+    }
+
+    void StopAbility(int abilityId, int ability) {
+        switch(abilityId) {
+            case 0:
+                StopAbilityPhase();
+                break;
+            case 1:
+                StopAbilitySpeedBoost();
+                break;
+            case 2:
+                StopAbilityStrength();
+                break;
+        }
+        abilityCooldowns[ability] = Abilities[ability].cooldown;
+        abilityState[ability] = false;
     }
 
     void UseAbilityPhase() {

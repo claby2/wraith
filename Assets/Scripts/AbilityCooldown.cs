@@ -11,8 +11,8 @@ public class AbilityCooldown : MonoBehaviour {
         Image.enabled = false;
     }
 
-    public void SetCooldown(float currentCooldown, float cooldown, int abilityId) {
-        if(currentCooldown <= 0 || abilityId == -1) {
+    public void SetCooldown(float currentCooldown, float cooldown) {
+        if(currentCooldown <= 0) {
             Image.enabled = false;
         } else {
             Image.enabled = true;

@@ -14,6 +14,8 @@ public class Inventory : MonoBehaviour {
     public Canvas Canvas;
     public Sprite[] WeaponSprites;
     public Sprite[] AbilitySprites;
+    public GameObject[] PlayerInventoryItems;
+    public InventoryItem[] PlayerInventoryItemScripts;
     public GameObject[] PlayerInventorySlots;
     public bool Active;
     public enum ItemType {
@@ -29,12 +31,13 @@ public class Inventory : MonoBehaviour {
             this.id = id;
         }
     };
+    public Item[] Items = new Item[rows * columns];
     private const int rows = 5;
     private const int columns = 5;
-    public Item[] Items = new Item[rows * columns];
 
     void Awake() {
-        SetPlayerInventorySlots();
+        InitializePlayerInventorySlots();
+        InitializePlayerInventoryItems();
         for(int index = 0; index < (rows * columns); ++index) {
             Items[index].type = ItemType.empty;
         }
@@ -87,12 +90,29 @@ public class Inventory : MonoBehaviour {
         RenderItems();
     }
 
+    public void RemoveEquippedItem(int index, int slotNumber) {
+        Item newInventoryItem = new Item();
+        if(slotNumber < 3) {
+            // Remove an ability
+            newInventoryItem.type = ItemType.ability;
+            newInventoryItem.id = playerController.Abilities[slotNumber].id;
+            playerController.EquipAbility(slotNumber, -1);
+        } else if(slotNumber == 3) {
+            // Remove a weapon
+            newInventoryItem.type = ItemType.weapon;
+            newInventoryItem.id = playerController.WeaponId;
+            playerController.EquipWeapon(-1);
+        }
+        Items[index] = newInventoryItem;
+        RenderItems();
+    }
+
     public void RemoveItem(int index) {
         Items[index].type = ItemType.empty;
         RenderItems();
     }
 
-    void SetPlayerInventorySlots() {
+    void InitializePlayerInventorySlots() {
         // Set first three slots as ability and fourth one as weapon
         for(int i = 0; i < 4; ++i) {
             PlayerInventorySlot playerInventorySlot = PlayerInventorySlots[i].GetComponent<PlayerInventorySlot>();
@@ -106,6 +126,16 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    void InitializePlayerInventoryItems() {
+        for(int i = 0; i < 4; ++i) {
+            InventoryItem inventoryItem = PlayerInventoryItems[i].GetComponent<InventoryItem>();
+            inventoryItem.Canvas = Canvas;
+            inventoryItem.Inventory = this;
+            inventoryItem.SlotNumber = i;
+            inventoryItem.Equipped = true;
+        }
+    }
+
     void Toggle(Transform transform, bool toggle) {
         foreach(Transform child in transform) {
             child.gameObject.SetActive(toggle);
@@ -116,6 +146,10 @@ public class Inventory : MonoBehaviour {
         foreach(Transform child in ItemInventory.transform) {
             Destroy(child.gameObject);
         }
+        foreach(Transform child in ItemSlots.transform) {
+            Destroy(child.gameObject);
+        }
+        // Render inventory items
         for(int i = 0; i < rows; ++i) {
             for(int j = 0; j < columns; ++j) {
                 int index = ((i * columns) + j);
@@ -137,6 +171,7 @@ public class Inventory : MonoBehaviour {
                 itemObject.GetComponent<RectTransform>().anchoredPosition = position;
                 inventoryItem.Canvas = Canvas;
                 inventoryItem.Index = index;
+                inventoryItem.Inventory = this;
                 if(Items[index].type != ItemType.empty && Items[index].id != -1) {
                     itemImage.enabled = true;
                     if(Items[index].type == ItemType.weapon) {
@@ -148,6 +183,26 @@ public class Inventory : MonoBehaviour {
                     itemImage.enabled = false;
                 }
             }
+        }
+        // Render player items
+        // Iterate through player items
+        for(int i = 0; i < 4; ++i) {
+            Image itemImage = PlayerInventoryItems[i].GetComponent<Image>();
+            PlayerInventoryItemScripts[i].Equipped = true;
+            bool enabled = false;
+            if(i < 3) {
+                // Item is an ability
+                int abilityId = playerController.Abilities[i].id;
+                if(i < playerController.Abilities.Length && abilityId != -1) {
+                    itemImage.sprite = AbilitySprites[playerController.Abilities[i].id];
+                    enabled = true;
+                }
+            } else if(playerController.WeaponId != -1) {
+                // Item is a weapon
+                itemImage.sprite = WeaponSprites[playerController.WeaponId];
+                enabled = true;
+            }
+            itemImage.enabled = enabled;
         }
     }
 }
