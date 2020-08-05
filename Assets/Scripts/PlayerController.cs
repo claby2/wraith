@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour {
         } else if(movementInput.x < 0) {
             SpriteRenderer.flipX = false;
         }
-        if(WeaponId != -1) {
+        if(WeaponId != -1 && Inventory.Active == false) {
             if(((weapon.automatic && Input.GetMouseButton(0)) || (!weapon.automatic && Input.GetMouseButtonDown(0))) && attackCooldown <= 0) {
                 attackCooldown = weapon.cooldown;
                 InstantiateProjectile();
