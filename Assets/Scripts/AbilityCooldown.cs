@@ -7,8 +7,12 @@ using UnityEngine.UI;
 public class AbilityCooldown : MonoBehaviour {
     public Image Image;
 
-    public void SetCooldown(float currentCooldown, float cooldown) {
-        if(currentCooldown <= 0) {
+    void Awake() {
+        Image.enabled = false;
+    }
+
+    public void SetCooldown(float currentCooldown, float cooldown, int abilityId) {
+        if(currentCooldown <= 0 || abilityId == -1) {
             Image.enabled = false;
         } else {
             Image.enabled = true;

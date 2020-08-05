@@ -9,6 +9,11 @@ public class AbilityIcon : MonoBehaviour {
     public Sprite[] AbilityIconSprites;
 
     public void SetAbility(int abilityId) {
-        Image.sprite = AbilityIconSprites[abilityId];
+        if(abilityId == -1) {
+            Image.enabled = false;
+        } else {
+            Image.enabled = true;
+            Image.sprite = AbilityIconSprites[abilityId];
+        }
     }
 }
