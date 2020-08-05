@@ -6,12 +6,14 @@ using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(CanvasGroup))]
-public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler {
+public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     public Canvas Canvas;
     public RectTransform RectTransform;
     public CanvasGroup CanvasGroup;
     public Inventory Inventory;
     public Inventory.ItemType Type;
+    public ItemInformation ItemInformation;
+    public PlayerController PlayerController;
     public int Index;
     public bool Locked = false;
     public int SlotNumber;
@@ -48,5 +50,39 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 Inventory.RemoveEquippedItem(Index, inventoryItem.SlotNumber);
             }
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData) {
+        string name = "";
+        string description = "";
+        if(Equipped == false) {
+            Inventory.Item item = Inventory.Items[Index];
+            if(item.type == Inventory.ItemType.ability) {
+                PlayerController.Ability ability = PlayerController.AbilityInformation.abilities[item.id];
+                name = ability.name;
+                description = ability.description;
+            } else if(item.type == Inventory.ItemType.weapon) {
+                PlayerController.Weapon weapon = PlayerController.WeaponInformation.weapons[item.id];
+                name = weapon.name;
+                description = weapon.description;
+            }
+        } else {
+            // If equipped, read from equipped items
+            if(Type == Inventory.ItemType.ability) {
+                PlayerController.Ability ability = PlayerController.Abilities[SlotNumber];
+                name = ability.name;
+                description = ability.description;
+            } else if(Type == Inventory.ItemType.weapon) {
+                PlayerController.Weapon weapon = PlayerController.CurrentWeapon;
+                name = weapon.name;
+                description = weapon.description;
+            }
+        }
+        ItemInformation.SetDisplay(name, description);
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
+        // Clear display
+        ItemInformation.SetDisplay("", "");
     }
 }

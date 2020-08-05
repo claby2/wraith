@@ -10,7 +10,8 @@ public class Inventory : MonoBehaviour {
     public GameObject ItemSlots;
     public GameObject ItemObject;
     public GameObject ItemSlot;
-    public PlayerController playerController;
+    public PlayerController PlayerController;
+    public ItemInformation ItemInformation;
     public Canvas Canvas;
     public Sprite[] WeaponSprites;
     public Sprite[] AbilitySprites;
@@ -82,11 +83,11 @@ public class Inventory : MonoBehaviour {
         Item newInventoryItem = new Item();
         newInventoryItem.type = Items[index].type;
         if(Items[index].type == ItemType.weapon) {
-            newInventoryItem.id = playerController.WeaponId;
-            playerController.EquipWeapon(Items[index].id);
+            newInventoryItem.id = PlayerController.WeaponId;
+            PlayerController.EquipWeapon(Items[index].id);
         } else if(Items[index].type == ItemType.ability) {
-            newInventoryItem.id = playerController.Abilities[slotNumber].id;
-            playerController.EquipAbility(slotNumber, Items[index].id);
+            newInventoryItem.id = PlayerController.Abilities[slotNumber].id;
+            PlayerController.EquipAbility(slotNumber, Items[index].id);
         }
         Items[index] = newInventoryItem;
         RenderItems();
@@ -119,13 +120,13 @@ public class Inventory : MonoBehaviour {
         if(slotNumber < 3) {
             // Remove an ability
             newInventoryItem.type = ItemType.ability;
-            newInventoryItem.id = playerController.Abilities[slotNumber].id;
-            playerController.EquipAbility(slotNumber, -1);
+            newInventoryItem.id = PlayerController.Abilities[slotNumber].id;
+            PlayerController.EquipAbility(slotNumber, -1);
         } else if(slotNumber == 3) {
             // Remove a weapon
             newInventoryItem.type = ItemType.weapon;
-            newInventoryItem.id = playerController.WeaponId;
-            playerController.EquipWeapon(-1);
+            newInventoryItem.id = PlayerController.WeaponId;
+            PlayerController.EquipWeapon(-1);
         }
         return newInventoryItem;
     }
@@ -152,6 +153,8 @@ public class Inventory : MonoBehaviour {
             inventoryItem.SlotNumber = i;
             inventoryItem.Equipped = true;
             inventoryItem.Type = i == 3 ? ItemType.weapon : ItemType.ability;
+            inventoryItem.ItemInformation = ItemInformation;
+            inventoryItem.PlayerController = PlayerController;
         }
     }
 
@@ -191,6 +194,8 @@ public class Inventory : MonoBehaviour {
                 inventoryItem.Canvas = Canvas;
                 inventoryItem.Index = index;
                 inventoryItem.Inventory = this;
+                inventoryItem.ItemInformation = ItemInformation;
+                inventoryItem.PlayerController = PlayerController;
                 if(Items[index].type != ItemType.empty && Items[index].id != -1) {
                     itemImage.enabled = true;
                     if(Items[index].type == ItemType.weapon) {
@@ -211,14 +216,14 @@ public class Inventory : MonoBehaviour {
             bool enabled = false;
             if(i < 3) {
                 // Item is an ability
-                int abilityId = playerController.Abilities[i].id;
-                if(i < playerController.Abilities.Length && abilityId != -1) {
-                    itemImage.sprite = AbilitySprites[playerController.Abilities[i].id];
+                int abilityId = PlayerController.Abilities[i].id;
+                if(i < PlayerController.Abilities.Length && abilityId != -1) {
+                    itemImage.sprite = AbilitySprites[PlayerController.Abilities[i].id];
                     enabled = true;
                 }
-            } else if(playerController.WeaponId != -1) {
+            } else if(PlayerController.WeaponId != -1) {
                 // Item is a weapon
-                itemImage.sprite = WeaponSprites[playerController.WeaponId];
+                itemImage.sprite = WeaponSprites[PlayerController.WeaponId];
                 enabled = true;
             }
             itemImage.enabled = enabled;

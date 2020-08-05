@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour {
     public bool Phased = false;
     public Ability[] Abilities = new Ability[3];
     public int WeaponId;
+    public Weapon CurrentWeapon;
+    public WeaponData WeaponInformation;
+    public AbilityData AbilityInformation;
 
     // Health
     private float maximumHealth = 100f;
@@ -36,19 +39,16 @@ public class PlayerController : MonoBehaviour {
     // Attack
     private float damageMultiplier = 1f;
     private float attackCooldown = 0f;
-    private WeaponData weaponData;
-    private Weapon weapon;
 
     // Ability
     private int abilitySelected = 0;
-    private AbilityData abilityData;
     private float[] abilityTimers = new float[3];
     private float[] abilityCooldowns = new float[3];
     private bool[] abilityState = new bool[3];
 
     void Start() {
-        weaponData = JsonUtility.FromJson<WeaponData>(WeaponDataJson.text);
-        abilityData = JsonUtility.FromJson<AbilityData>(AbilityDataJson.text);
+        WeaponInformation = JsonUtility.FromJson<WeaponData>(WeaponDataJson.text);
+        AbilityInformation = JsonUtility.FromJson<AbilityData>(AbilityDataJson.text);
         currentHealth = maximumHealth;
         EquipWeapon(0);
         // Set abilities to id -1, empty ability
@@ -75,12 +75,12 @@ public class PlayerController : MonoBehaviour {
             SpriteRenderer.flipX = false;
         }
         if(WeaponId != -1 && Inventory.Active == false) {
-            if(((weapon.automatic && Input.GetMouseButton(0)) || (!weapon.automatic && Input.GetMouseButtonDown(0))) && attackCooldown <= 0) {
-                attackCooldown = weapon.cooldown;
+            if(((CurrentWeapon.automatic && Input.GetMouseButton(0)) || (!CurrentWeapon.automatic && Input.GetMouseButtonDown(0))) && attackCooldown <= 0) {
+                attackCooldown = CurrentWeapon.cooldown;
                 InstantiateProjectile();
             }
             attackCooldown -= attackCooldown < 0 ? 0 : Time.deltaTime;
-            CurrentWeaponReload.SetReload(attackCooldown, weapon.cooldown);
+            CurrentWeaponReload.SetReload(attackCooldown, CurrentWeapon.cooldown);
         }
         if(Input.GetMouseButtonDown(1)) {
             UseAbility();
@@ -100,13 +100,13 @@ public class PlayerController : MonoBehaviour {
         WeaponId = id;
         CurrentWeaponIcon.SetWeapon(WeaponId);
         if(WeaponId != -1) {
-            weapon = weaponData.weapons[WeaponId];
+            CurrentWeapon = WeaponInformation.weapons[WeaponId];
         }
     }
 
     public void EquipAbility(int slot, int id) {
         if(id != -1) {
-            Abilities[slot] = abilityData.abilities[id];
+            Abilities[slot] = AbilityInformation.abilities[id];
         } else {
             abilityTimers[slot] = 0f;
             AbilityFrames[slot].Unselect();
@@ -137,9 +137,9 @@ public class PlayerController : MonoBehaviour {
         GameObject projectile = Instantiate(Projectile, transform.position, Quaternion.identity);
         Projectile projectileScript = projectile.GetComponent<Projectile>();
         projectileScript.CrosshairPosition = Crosshair.transform.position;
-        projectileScript.Speed = weapon.projectileSpeed;
-        projectileScript.Damage = weapon.damage * damageMultiplier;
-        projectileScript.SpriteId = weapon.projectileSpriteId;
+        projectileScript.Speed = CurrentWeapon.projectileSpeed;
+        projectileScript.Damage = CurrentWeapon.damage * damageMultiplier;
+        projectileScript.SpriteId = CurrentWeapon.projectileSpriteId;
     }
 
     void HandleAbilities() {
