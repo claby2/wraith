@@ -9,6 +9,11 @@ public class CurrentWeaponIcon : MonoBehaviour {
     public Sprite[] WeaponSprites;
 
     public void SetWeapon(int id) {
-        Image.sprite = WeaponSprites[id];
+        if(id != -1) {
+            Image.enabled = true;
+            Image.sprite = WeaponSprites[id];
+        } else {
+            Image.enabled = false;
+        }
     }
 }

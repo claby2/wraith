@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour {
     public SpriteRenderer SpriteRenderer;
     public GameObject Crosshair;
     public GameObject Projectile;
-    public GameObject PlayerHealthBar;
     public AbilityFrame[] AbilityFrames;
     public AbilityIcon[] AbilityIcons;
     public AbilityIcon[] AbilityInventoryIcons;
@@ -18,16 +17,16 @@ public class PlayerController : MonoBehaviour {
     public CurrentWeaponIcon CurrentWeaponIconInventory;
     public CurrentWeaponReload CurrentWeaponReload;
     public Inventory Inventory;
+    public PlayerHealthBar PlayerHealthBar;
     public TextAsset WeaponDataJson;
     public TextAsset AbilityDataJson;
     public Sprite PlayerSprite;
     public Sprite PlayerPhasedSprite;
     public bool Phased = false;
     public Ability[] Abilities = new Ability[3];
-    public int WeaponId = -1;
+    public int WeaponId;
 
     // Health
-    private PlayerHealthBar playerHealthBarScript;
     private float maximumHealth = 100f;
     private float currentHealth;
 
@@ -53,7 +52,6 @@ public class PlayerController : MonoBehaviour {
         weaponData = JsonUtility.FromJson<WeaponData>(WeaponDataJson.text);
         abilityData = JsonUtility.FromJson<AbilityData>(AbilityDataJson.text);
         currentHealth = maximumHealth;
-        playerHealthBarScript = PlayerHealthBar.GetComponent<PlayerHealthBar>();
         EquipWeapon(0);
         // Set abilities to id -1, empty ability
         Ability emptyAbility = new Ability(-1);
@@ -70,6 +68,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update() {
+        Debug.Log(WeaponId);
         HandleAbilities();
         GetMovementInput();
         if(movementInput.x > 0) {
@@ -77,15 +76,17 @@ public class PlayerController : MonoBehaviour {
         } else if(movementInput.x < 0) {
             SpriteRenderer.flipX = false;
         }
-        if(((weapon.automatic && Input.GetMouseButton(0)) || (!weapon.automatic && Input.GetMouseButtonDown(0))) && attackCooldown <= 0) {
-            attackCooldown = weapon.cooldown;
-            InstantiateProjectile();
+        if(WeaponId != -1) {
+            if(((weapon.automatic && Input.GetMouseButton(0)) || (!weapon.automatic && Input.GetMouseButtonDown(0))) && attackCooldown <= 0) {
+                attackCooldown = weapon.cooldown;
+                InstantiateProjectile();
+            }
+            attackCooldown -= attackCooldown < 0 ? 0 : Time.deltaTime;
+            CurrentWeaponReload.SetReload(attackCooldown, weapon.cooldown);
         }
         if(Input.GetMouseButtonDown(1)) {
             UseAbility();
         }
-        attackCooldown -= attackCooldown < 0 ? 0 : Time.deltaTime;
-        CurrentWeaponReload.SetReload(attackCooldown, weapon.cooldown);
     }
 
     void FixedUpdate() {
@@ -94,14 +95,16 @@ public class PlayerController : MonoBehaviour {
 
     public void TakeDamage(float damage) {
         currentHealth -= damage;
-        playerHealthBarScript.SetHealth(currentHealth, maximumHealth);
+        PlayerHealthBar.SetHealth(currentHealth, maximumHealth);
     }
 
     public void EquipWeapon(int id) {
         WeaponId = id;
         CurrentWeaponIcon.SetWeapon(WeaponId);
         CurrentWeaponIconInventory.SetWeapon(WeaponId);
-        weapon = weaponData.weapons[WeaponId];
+        if(WeaponId != -1) {
+            weapon = weaponData.weapons[WeaponId];
+        }
     }
 
     public void EquipAbility(int slot, int id) {

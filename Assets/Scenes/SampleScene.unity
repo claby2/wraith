@@ -999,7 +999,6 @@ MonoBehaviour:
   Crosshair: {fileID: 1140841750}
   Projectile: {fileID: 7770844145274383260, guid: f9c8fff4ef46458468f44d02c90e754d,
     type: 3}
-  PlayerHealthBar: {fileID: 199505776}
   AbilityFrames:
   - {fileID: 2070178351}
   - {fileID: 1086426722}
@@ -1020,11 +1019,29 @@ MonoBehaviour:
   CurrentWeaponIconInventory: {fileID: 1749490486}
   CurrentWeaponReload: {fileID: 1397919515}
   Inventory: {fileID: 1727756220}
+  PlayerHealthBar: {fileID: 199505780}
   WeaponDataJson: {fileID: 4900000, guid: 9bd66fdcd2a4d264986a86f2df0dd518, type: 3}
   AbilityDataJson: {fileID: 4900000, guid: fff772a87a2d54f4a88c8ccafc0f7444, type: 3}
   PlayerSprite: {fileID: 21300000, guid: 63f5ece9a3fe2384dbee83e44b3c4933, type: 3}
   PlayerPhasedSprite: {fileID: 21300000, guid: f52fcaf2065cbd2489007970a0869c8a, type: 3}
   Phased: 0
+  Abilities:
+  - id: 0
+    name: 
+    duration: 0
+    cooldown: 0
+    description: 
+  - id: 0
+    name: 
+    duration: 0
+    cooldown: 0
+    description: 
+  - id: 0
+    name: 
+    duration: 0
+    cooldown: 0
+    description: 
+  WeaponId: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -6543,7 +6560,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1149136287
 GameObject:
@@ -7322,7 +7339,7 @@ Transform:
   m_Children:
   - {fileID: 1047682509}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1716073700 stripped
 RectTransform:
@@ -7942,7 +7959,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1965301624
 MonoBehaviour:
